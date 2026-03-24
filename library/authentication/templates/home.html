@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Library Management System</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        .container { max-width: 1200px; margin: 0 auto; }
+        .nav { background-color: #f0f0f0; padding: 15px; margin-bottom: 20px; border-radius: 5px; }
+        .nav a { margin-right: 15px; text-decoration: none; color: #0066cc; }
+        .nav a:hover { text-decoration: underline; }
+        h1 { color: #333; }
+        .welcome { background-color: #e8f4f8; padding: 20px; border-radius: 5px; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="nav">
+            <a href="{% url 'book_list' %}">📚 Books</a>
+            {% if user.is_authenticated %}
+                <a href="{% url 'my_orders' %}">📋 My Orders</a>
+                <a href="{% url 'create_order' %}">➕ Create Order</a>
+                {% if user.role == 1 %}
+                    <a href="{% url 'authors' %}">✍️ Authors</a>
+                    <a href="{% url 'user_list' %}">👥 Users</a>
+                    <a href="{% url 'all_orders' %}">📊 All Orders</a>
+                {% endif %}
+                <span style="color: #666;">Welcome, {{ user.email }}</span>
+                <a href="{% url 'logout' %}" style="float: right;">🚪 Logout</a>
+            {% else %}
+                <a href="{% url 'login' %}" style="float: right;">🔐 Login</a>
+                <a href="{% url 'register' %}" style="float: right; margin-right: 10px;">✍️ Register</a>
+            {% endif %}
+        </div>
+
+        <div class="welcome">
+            <h1>Welcome to Library Management System</h1>
+            {% if user.is_authenticated %}
+                <p>Hello, <strong>{{ user.email }}</strong>!</p>
+                <p>You are logged in as a {% if user.role == 1 %}<strong>Librarian</strong>{% else %}<strong>Guest</strong>{% endif %}.</p>
+                <ul>
+                    <li><a href="{% url 'book_list' %}">Browse all books</a></li>
+                    <li><a href="{% url 'my_orders' %}">View your orders</a></li>
+                    <li><a href="{% url 'create_order' %}">Create a new order</a></li>
+                    {% if user.role == 1 %}
+                        <li><a href="{% url 'authors' %}">Manage authors</a></li>
+                        <li><a href="{% url 'user_list' %}">View all users</a></li>
+                        <li><a href="{% url 'all_orders' %}">View all orders</a></li>
+                    {% endif %}
+                </ul>
+            {% else %}
+                <p>Please <a href="{% url 'login' %}">log in</a> or <a href="{% url 'register' %}">register</a> to continue.</p>
+                <p>You can still <a href="{% url 'book_list' %}">browse books</a> as a guest.</p>
+            {% endif %}
+        </div>
+    </div>
+</body>
+</html>

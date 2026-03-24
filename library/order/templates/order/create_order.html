@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Create Order</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        .container { max-width: 1200px; margin: 0 auto; }
+        .nav { background-color: #f0f0f0; padding: 15px; margin-bottom: 20px; border-radius: 5px; }
+        .nav a { margin-right: 15px; text-decoration: none; color: #0066cc; }
+        .nav a:hover { text-decoration: underline; }
+        h1 { color: #333; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="nav">
+            <a href="{% url 'home' %}">🏠 Home</a>
+            <a href="{% url 'book_list' %}">📚 Books</a>
+            {% if user.is_authenticated %}
+                <a href="{% url 'my_orders' %}">📋 My Orders</a>
+                <a href="{% url 'create_order' %}">➕ Create Order</a>
+                {% if user.role == 1 %}
+                    <a href="{% url 'authors' %}">✍️ Authors</a>
+                    <a href="{% url 'user_list' %}">👥 Users</a>
+                    <a href="{% url 'all_orders' %}">📊 All Orders</a>
+                {% endif %}
+                <span style="color: #666;">{{ user.email }}</span>
+                <a href="{% url 'logout' %}" style="float: right;">🚪 Logout</a>
+            {% else %}
+                <a href="{% url 'login' %}" style="float: right;">🔐 Login</a>
+            {% endif %}
+        </div>
+
+        <h1>Create Order</h1>
+        <form method="POST">
+            {% csrf_token %}
+            <label for="book_id">Choose a book:</label>
+            <select name="book_id" id="book_id">
+                {% for book in books %}
+                    <option value="{{ book.id }}">{{ book.name }}</option>
+            {% endfor %}
+        </select>
+        
+        <label for="plated_end_at">Return Date:</label>
+        <input type="datetime-local" name="plated_end_at" required>
+        
+        <button type="submit">Create Order</button>
+    </form>
+    </div>
+</body>
+</html>

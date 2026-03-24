@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html>
+    <nav>
+    <a href="{% url 'home' %}">Home</a> |
+    <a href="{% url 'book_list' %}">Books</a> |
+    {% if user.is_authenticated %}
+        <a href="{% url 'my_orders' %}">My Orders</a> |
+        <a href="{% url 'create_order' %}">Order Book</a> |
+        
+        {% if user.role == 1 %}
+            <a href="{% url 'authors' %}">Authors</a> |
+            <a href="{% url 'user_list' %}">Users</a> |
+            <a href="{% url 'all_orders' %}">All Orders</a> |
+        {% endif %}
+        
+        <span>You are logged in as: {{ user.email }}</span>
+        <a href="/auth/logout/">Logout</a>
+    {% else %}
+        <a href="/auth/login/">Login</a>
+    {% endif %}
+</nav>
+<hr>
+<h1>{{ book.name }}</h1>
+<p>{{ book.description }}</p>
+<p>In Stock: {{ book.count }}</p>
+<a href="{% url 'book_list' %}">Back to List</a>

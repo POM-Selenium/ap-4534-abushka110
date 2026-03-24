@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>User Details</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        .container { max-width: 1200px; margin: 0 auto; }
+        .nav { background-color: #f0f0f0; padding: 15px; margin-bottom: 20px; border-radius: 5px; }
+        .nav a { margin-right: 15px; text-decoration: none; color: #0066cc; }
+        .nav a:hover { text-decoration: underline; }
+        h1 { color: #333; }
+        .no-access { background-color: #fff3cd; padding: 20px; border-radius: 5px; color: #856404; }
+        .user-card { background-color: #f9f9f9; padding: 30px; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
+        .user-info { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+        .info-row { padding: 12px; border-bottom: 1px solid #ddd; }
+        .info-label { font-weight: bold; color: #555; font-size: 14px; }
+        .info-value { color: #333; font-size: 16px; }
+        .badge { display: inline-block; padding: 6px 12px; border-radius: 12px; font-size: 14px; font-weight: bold; }
+        .badge-admin { background-color: #e3f2fd; color: #1976d2; }
+        .badge-guest { background-color: #f3e5f5; color: #7b1fa2; }
+        .badge-active { background-color: #e8f5e9; color: #388e3c; }
+        .badge-inactive { background-color: #ffebee; color: #d32f2f; }
+        .back-link { margin-top: 20px; }
+        .back-link a { color: #0066cc; text-decoration: none; }
+        .back-link a:hover { text-decoration: underline; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="nav">
+            <a href="{% url 'home' %}">🏠 Home</a>
+            <a href="{% url 'book_list' %}">📚 Books</a>
+            {% if user.is_authenticated %}
+                {% if user.role == 1 %}
+                    <a href="{% url 'authors' %}">✍️ Authors</a>
+                    <a href="{% url 'user_list' %}">👥 Users</a>
+                    <a href="{% url 'all_orders' %}">📊 All Orders</a>
+                {% endif %}
+                <a href="{% url 'my_orders' %}">📋 My Orders</a>
+                <span style="color: #666;">{{ user.email }}</span>
+                <a href="{% url 'logout' %}" style="float: right;">🚪 Logout</a>
+            {% else %}
+                <a href="{% url 'login' %}" style="float: right;">🔐 Login</a>
+            {% endif %}
+        </div>
+
+        {% if user.is_authenticated and user.role == 1 %}
+            {% if object_user %}
+                <h1>User Details</h1>
+                <div class="user-card">
+                    <div class="user-info">
+                        <div class="info-row">
+                            <div class="info-label">Email</div>
+                            <div class="info-value">{{ object_user.email }}</div>
+                        </div>
+                        <div class="info-row">
+                            <div class="info-label">First Name</div>
+                            <div class="info-value">{{ object_user.first_name|default:"—" }}</div>
+                        </div>
+                        <div class="info-row">
+                            <div class="info-label">Middle Name</div>
+                            <div class="info-value">{{ object_user.middle_name|default:"—" }}</div>
+                        </div>
+                        <div class="info-row">
+                            <div class="info-label">Last Name</div>
+                            <div class="info-value">{{ object_user.last_name|default:"—" }}</div>
+                        </div>
+                        <div class="info-row">
+                            <div class="info-label">Role</div>
+                            <div class="info-value">
+                                {% if object_user.role == 1 %}
+                                    <span class="badge badge-admin">Librarian</span>
+                                {% else %}
+                                    <span class="badge badge-guest">Guest</span>
+                                {% endif %}
+                            </div>
+                        </div>
+                        <div class="info-row">
+                            <div class="info-label">Status</div>
+                            <div class="info-value">
+                                {% if object_user.is_active %}
+                                    <span class="badge badge-active">Active</span>
+                                {% else %}
+                                    <span class="badge badge-inactive">Inactive</span>
+                                {% endif %}
+                            </div>
+                        </div>
+                        <div class="info-row">
+                            <div class="info-label">Member Since</div>
+                            <div class="info-value">{{ object_user.created_at|date:"F d, Y H:i" }}</div>
+                        </div>
+                        <div class="info-row">
+                            <div class="info-label">Last Updated</div>
+                            <div class="info-value">{{ object_user.updated_at|date:"F d, Y H:i" }}</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="back-link">
+                    <a href="{% url 'user_list' %}">← Back to Users List</a>
+                </div>
+            {% else %}
+                <h1>User Not Found</h1>
+                <p>The user you're looking for doesn't exist.</p>
+                <div class="back-link">
+                    <a href="{% url 'user_list' %}">← Back to Users List</a>
+                </div>
+            {% endif %}
+        {% else %}
+            <h1>Access Denied</h1>
+            <div class="no-access">
+                <p>❌ You don't have permission to access this page. Only librarians can view user details.</p>
+            </div>
+        {% endif %}
+    </div>
+</body>
+</html>
