@@ -7,12 +7,17 @@ CustomUser = get_user_model()
 class EmailBackend(ModelBackend):
     """
     Custom authentication backend that allows users to authenticate using email
-    instead of username.
+    instead of username. Email comparison is case-insensitive.
     """
     
     def authenticate(self, request, email=None, password=None, **kwargs):
         try:
-            user = CustomUser.objects.get(email=email)
+            # Use case-insensitive email lookup
+            if email:
+                email = email.lower().strip()
+                user = CustomUser.objects.get(email__iexact=email)
+            else:
+                return None
         except CustomUser.DoesNotExist:
             return None
         

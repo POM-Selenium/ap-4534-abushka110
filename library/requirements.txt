@@ -1,6 +1,8 @@
 asgiref==3.5.2
 Django==4.1
-psycopg2==2.9.3
+psycopg2-binary
 pytz==2022.2.1
 sqlparse==0.4.2
 tzdata==2022.2
+selenium==4.10.0
+webdriver-manager==3.8.6

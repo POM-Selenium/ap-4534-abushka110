@@ -10,7 +10,7 @@ def register(request):
         first_name = request.POST.get('first_name', '')
         last_name = request.POST.get('last_name', '')
         middle_name = request.POST.get('middle_name', '')
-        email = request.POST.get('email', '')
+        email = request.POST.get('email', '').lower().strip()
         password = request.POST.get('password', '')
         password_confirm = request.POST.get('password_confirm', '')
         role = int(request.POST.get('role', 0))  # 0 = visitor, 1 = librarian
@@ -24,7 +24,7 @@ def register(request):
             return render(request, 'authentication/register.html',
                         {'error': 'Passwords do not match'})
         
-        if CustomUser.objects.filter(email=email).exists():
+        if CustomUser.objects.filter(email__iexact=email).exists():
             return render(request, 'authentication/register.html',
                         {'error': 'Email already exists'})
         
@@ -51,7 +51,7 @@ def register(request):
 def login_view(request):
     """Login view for guests/users."""
     if request.method == 'POST':
-        email = request.POST.get('email', '')
+        email = request.POST.get('email', '').lower().strip()
         password = request.POST.get('password', '')
         
         if not email or not password:
